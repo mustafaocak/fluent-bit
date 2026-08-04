@@ -31,10 +31,10 @@ extraVolumes:
     hostPath:
       path: /var/log/journal
 
-  - name: machineid
-    hostPath:
-      path: /etc/machine-id
-
+#  - name: machineid
+#    hostPath:
+#      path: /etc/machine-id
+#
   - name: fluentbit-state
     hostPath:
       path: /var/lib/fluent-bit
@@ -49,9 +49,9 @@ extraVolumeMounts:
     mountPath: /var/log/journal
     readOnly: true
 
-  - name: machineid
-    mountPath: /etc/machine-id
-    readOnly: true
+#  - name: machineid
+#    mountPath: /etc/machine-id
+#    readOnly: true
 
   - name: fluentbit-state
     mountPath: /fluent-bit/state
