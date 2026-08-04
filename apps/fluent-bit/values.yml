@@ -153,4 +153,4 @@ config:
   outputs: |
     [OUTPUT]
         Name stdout
-        Match kube.*
+        Match *
