@@ -5,21 +5,72 @@ kind: DaemonSet
 config:
   inputs: |
     [INPUT]
-        Name tail
-        Path /var/log/containers/*.log
-        multiline.parser docker, cri
-        Tag kube.*
-        Mem_Buf_Limit 5MB
-        Skip_Long_Lines On
+        Name    systemd
+        Tag     uio_logs_5000_systemd
+        db      /var/lib/fluent-bit/storage/systemd.db
+        db.Sync   Normal
+
+        Mem_Buf_Limit 100MB
+        storage.type filesystem
+        storage.pause_on_chunks_overlimit on
+
+        Read_From_Tail On
+        Lowercase On
+        Threaded true
+
+
 
   filters: |
     [FILTER]
-        Name kubernetes
-        Match kube.*
-        Merge_Log On
-        Keep_Log Off
-        K8S-Logging.Parser On
-        K8S-Logging.Exclude On
+        Name modify
+        Match uio_logs_5000_systemd
+
+        Add dataops.data_processor dataops-logs-systemd
+
+        Add event.module systemd
+        Add event.provider systemd
+        Add event.dataset systemd.journald
+
+        Add data_stream.namespace prod
+        Add data_stream.dataset systemd.journald
+
+        Add service.name linux-systemd
+
+    [FILTER]
+        Name nest
+        Match *
+
+        Operation nest
+        Wildcard dataops.*
+        Nest_under dataops
+        Remove_prefix dataops.
+
+    [FILTER]
+        Name nest
+        Match *
+
+        Operation nest
+        Wildcard event.*
+        Nest_under event
+        Remove_prefix event.
+
+    [FILTER]
+        Name nest
+        Match *
+
+        Operation nest
+        Wildcard data_stream.*
+        Nest_under data_stream
+        Remove_prefix data_stream.
+
+    [FILTER]
+        Name nest
+        Match *
+
+        Operation nest
+        Wildcard service.*
+        Nest_under service
+        Remove_prefix service.
 
   outputs: |
     [OUTPUT]
