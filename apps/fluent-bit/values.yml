@@ -64,22 +64,6 @@ extraVolumeMounts:
   - name: fluentbit-state
     mountPath: /fluent-bit/state
 
-extraDeploy:
-  - |
-    apiVersion: cert-manager.io/v1
-    kind: Certificate
-    metadata:
-      name: fluent-bit-cert
-      namespace: logging
-    spec:
-      secretName: fluent-bit-tls-secret
-      issuerRef:
-        name: my-internal-ca-issuer
-        kind: ClusterIssuer
-      commonName: fluent-bit.logging.svc
-      dnsNames:
-      - fluent-bit.logging.svc.cluster.local
-
 config:
 
   service: |
