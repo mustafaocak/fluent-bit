@@ -1,0 +1,7 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: my-internal-ca-issuer
+  namespace: logging # Must match the Certificate namespace
+spec:
+  selfSigned: {}
